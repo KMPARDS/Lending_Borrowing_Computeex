@@ -88,10 +88,10 @@ contract LB {
     function deposit(address _contractAddress, uint256 _amount) public payable returns (bool) {
         if(_contractAddress != address(0)){
             ERC20 erc20 = ERC20(_contractAddress);
-            require(erc20.transferFrom(msg.sender, address(this), _amount));
+            require(erc20.transferFrom(msg.sender, address(this), _amount), "transferFrom failed");
             balance[msg.sender][_contractAddress] = balance[msg.sender][_contractAddress].add(_amount);
         }else{
-            require(msg.value == _amount);
+            require(msg.value == _amount, "Value associated with transacion must be equal to");
             balance[msg.sender][address(0)] = balance[msg.sender][address(0)].add(_amount);
         }
         emit NewDeposit(msg.sender, address(0), _amount);
@@ -102,7 +102,7 @@ contract LB {
     /// @return The balance remaining for the user
     function withdraw(address _contractAddress, uint256 _amount) public returns (uint256) {
         require(balance[msg.sender][_contractAddress]>= _amount, "Insufficient balance in bank");
-        if(_contractAddress == address(0)){
+        if(_contractAddress != address(0)){
             ERC20 erc20 = ERC20(_contractAddress);
             require(erc20.transfer(msg.sender, _amount));
         }else{

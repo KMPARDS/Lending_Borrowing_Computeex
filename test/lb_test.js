@@ -43,14 +43,14 @@ describe('Lend And Borrow Smart Contract', async() => {
     assert.ok(lb_instance.address, 'LB deployed');
   });
 
-
-
-  it('Deposit', async() => {
-    let amount =  1000000000000;
-    await erc20_instances[0].functions.approve(lb_instance.address, amount)
-    await lb_instance.functions.deposit(erc20_instances[0].address, amount)
-    // console.log(accounts[0])
-    // console.log(await lb_instance.functions.balance(accounts[0], erc20_instances[0].address))
-
+  it('Deposit ERC20', async() => {
+    let amount =  100000000;
+    let tx = await erc20_instances[0].functions.approve(lb_instance.address, amount);
+    await tx.wait();
+    tx = await lb_instance.functions.deposit(erc20_instances[0].address, amount)
+    await tx.wait();
+    assert.ok(String(await lb_instance.functions.balance(accounts[0], erc20_instances[0].address)) == amount, "Balance greater than 0");
   });
+
+
 });
